@@ -6,7 +6,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+class attributeDetails{
+    String status;
+    int bkId;
 
+    attributeDetails(String status, int bkId)
+    {
+        this.status = status;
+        this.bkId = bkId;
+
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
+    }
+
+    public int getBookId()
+    {
+        return bkId;
+    }
+
+    public void setBookId(int bkId)
+    {
+        this.bkId = bkId;
+    }
+}
 class Sample {
     int obj1;
     int obj2;
@@ -31,6 +61,7 @@ class Sample {
     public void setObj2(int obj2) {
         this.obj2 = obj2;
     }
+
 }
 
 public class Main {
@@ -78,6 +109,41 @@ public class Main {
             writer.write(""+samples.get(1).getObj1());
             writer.flush();
             writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inOutCheckCounter() {
+        ArrayList<attributeDetails> inOutDetails = new ArrayList<>();
+        String line;
+
+        try {
+            FileReader file = new FileReader("C:\\Users\\I526514\\Desktop\\DSA assignment\\promptsPS4.txt");
+            BufferedReader br = new BufferedReader(file);
+
+            while((line = br.readLine())!=null){
+                String[] record = line.split(":");
+
+                String status = record[0];
+                int bkId = Integer.parseInt(record[1]);
+
+                inOutDetails.add(new attributeDetails(status,bkId));
+            }
+
+            for(int i=0; i<=inOutDetails.size(); i++)
+            {
+                if(inOutDetails.get(i).getStatus().equals("checkOut"))
+                {
+                    /*int i = Search(obj1);
+                    obj2-- for corresponding obj1;*/
+                }
+                else if(inOutDetails.get(i).getStatus().equals("checkin"))
+                {
+                    /*int i = Search(obj1);
+                    obj2++ for corresponding obj1;*/
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
