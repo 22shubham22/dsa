@@ -6,37 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class attributeDetails{
-    String status;
-    int bkId;
 
-    attributeDetails(String status, int bkId)
-    {
-        this.status = status;
-        this.bkId = bkId;
-
-    }
-
-    public String getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    public int getBookId()
-    {
-        return bkId;
-    }
-
-    public void setBookId(int bkId)
-    {
-        this.bkId = bkId;
-    }
-}
 class BookNode {
     public int bookId;
     public int availableCount;
@@ -138,7 +108,7 @@ class Sample {
 
 }
 
-public class Main {
+public class Main extends LibraryManagement {
 
     static List<Sample> samples = new ArrayList<Sample>();
     public static void main(String[] args) {
@@ -193,31 +163,42 @@ public class Main {
         }
     }
 
+
+    /*
+    * In this method, we are trying to read input from the PromptsPS4.txt
+    * and we are checking the status whether it is checkIn or checkOut
+    * Based on that, we update the available counter and the checkout counter
+    *
+    * */
     public void inOutCheckCounter() {
-        ArrayList<attributeDetails> inOutDetails = new ArrayList<>();
         String line;
+        BookNode book;
         try {
             FileReader file = new FileReader("promptsPS4.txt");
             BufferedReader br = new BufferedReader(file);
-            while((line = br.readLine())!=null){
+
+            //here we read line by line from the input file which is promptsPS4.txt
+            while( (line = br.readLine())  !=  null){
                 String[] record = line.split(":");
 
-                String status = record[0];
-                int bkId = Integer.parseInt(record[1]);
+                String status = record[0]; //here we simply fetch the first string which is the status of book
 
-                inOutDetails.add(new attributeDetails(status,bkId));
-            }
-            for(int i=0; i<=inOutDetails.size(); i++)
-            {
-                if(inOutDetails.get(i).getStatus().equals("checkOut"))
+                if(status.equals("checkOut"))
                 {
-                    /*int i = Search(obj1);
-                    obj2-- for corresponding obj1;*/
+                    /*if book status is checkout then we reduce the available count by 1 and increase the
+                    * checkout counter by 1
+                    */
+                    book = findBook(Integer.parseInt(record[1]));
+                    book.availableCount--;
+                    book.checkoutCounter++;
                 }
-                else if(inOutDetails.get(i).getStatus().equals("checkin"))
+                else if(status.equals("checkIn"))
                 {
-                    /*int i = Search(obj1);
-                    obj2++ for corresponding obj1;*/
+                    /*here when the book is checked in then we simply increase the available counter by 1
+                    * but we do not modify the checkout counter here
+                    */
+                    book = findBook(Integer.parseInt((record[1])));
+                    book.availableCount++;
                 }
             }
         } catch (IOException e) {
