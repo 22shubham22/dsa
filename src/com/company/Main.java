@@ -3,8 +3,11 @@ package com.company; // to be commented when given to ma'am
 
 import java.io.IOException;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class BookNode {
     public int bookId;
@@ -28,6 +31,10 @@ class BookNode {
         this.rightBook=null;
         this.leftBook=null;
     }
+
+    public int getAvailableCount() { return this.availableCount; }
+
+    public int getCheckoutCounter() { return this.checkoutCounter; }
 
     public void print() {
         System.out.print(this.bookId+","+this.availableCount+","+this.checkoutCounter+"\n");
@@ -83,12 +90,11 @@ class LibraryManagement {
         return currentBook; // return the book that we found while traversal
     }
 
-    public void traverseBook(BookNode book) { // inorder traversal coz as per assignment while traversing to print inventory BookId should be ascending order.
+    public void traverseBook(BookNode book, List<BookNode> listOfBooks) { // inorder traversal coz as per assignment while traversing to print inventory BookId should be ascending order.
         if (book != null) {
-            traverseBook(book.leftBook);
-            book.print();
-            //output to file between recursions so that traversal is inorder
-            traverseBook(book.rightBook);
+            traverseBook(book.leftBook, listOfBooks);
+            listOfBooks.add(book);
+            traverseBook(book.rightBook,listOfBooks);
         }
     }
 }
@@ -101,13 +107,20 @@ public class Main {
 
         _readBookList();  //for reading from input1.txt
         _chkInChkOut();  //for reading from prompt.txt
-        library.traverseBook(library.rootBook);
+        List<BookNode> listOfBooks= new ArrayList<BookNode>();
+        library.traverseBook(library.rootBook, listOfBooks);
+        listOfBooks.forEach((book) -> book.print());
+        List<BookNode> sortedUsers = listOfBooks.stream().sorted(Comparator.comparing(BookNode::getCheckoutCounter)).collect(Collectors.toList());
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        sortedUsers.forEach((book) -> book.print());
     }
 
     public static void _readBookList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("lines.txt")); // providing the name of file from the same directory
+            reader = new BufferedReader(new FileReader("inputsPS4.txt")); // providing the name of file from the same directory
             String line = reader.readLine(); // reading one line of file
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*")); // splitting the line based on the expression into a list where list[0] is BookID and list[1] is number of books
