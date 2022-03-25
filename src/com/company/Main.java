@@ -60,6 +60,10 @@ class BookNode {
         this.rightBook=null;
         this.leftBook=null;
     }
+
+    public void print() {
+        System.out.print(this.bookId+","+this.availableCount+","+this.checkoutCounter+"\n");
+    }
 }
 
 class LibraryManagement {
@@ -114,6 +118,7 @@ class LibraryManagement {
     public void traverseBook(BookNode book) { // inorder traversal coz as per assignment while traversing to print inventory BookId should be ascending order.
         if (book != null) {
             traverseBook(book.leftBook);
+            book.print();
             //output to file between recursions so that traversal is inorder
             traverseBook(book.rightBook);
         }
@@ -123,26 +128,27 @@ class LibraryManagement {
 public class Main {
 
 //    List<Sample> samples = new ArrayList<Sample>();
-    LibraryManagement library = new LibraryManagement();
+    static LibraryManagement library = new LibraryManagement();
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
         //for reading from input1.txt
         readFromFile();
         //for printing to output file outputPS4.txt
 //        printToOutputFile(samples); // should be corrected by mishra for the new tree system
     }
 
-    public void readFromFile() {
+    public static void readFromFile() {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("lines.txt"));
             String line = reader.readLine();
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*"));
-                this.library.insertBook(new BookNode(Integer.parseInt(items.get(0)),Integer.parseInt(items.get(1)),0)); // insert the line (new book) to the library (tree)
+                library.insertBook(new BookNode(Integer.parseInt(items.get(0)),Integer.parseInt(items.get(1)),0)); // insert the line (new book) to the library (tree)
                 line = reader.readLine(); // read next line
             }
             reader.close(); // close the reader
+            library.traverseBook(library.rootBook);
         } catch (IOException e) {
             e.printStackTrace();
         }
