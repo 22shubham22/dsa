@@ -87,8 +87,17 @@ class LibraryManagement {
         if (book != null) {
             traverseBook(book.leftBook);
             book.print();
-            //output to file between recursions so that traversal is inorder
+            //output to file between recursions so that traversal is inorder-> Note: this is done in traverseAndPrintToOutputFile()
             traverseBook(book.rightBook);
+        }
+    }
+
+    public void traverseAndPrintToOutputFile(BookNode book,BufferedWriter writer) throws IOException {
+        if (book != null) {
+            traverseAndPrintToOutputFile(book.leftBook,writer);
+            //output to file between recursions so that traversal is inorder
+            writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckOutCounter: "+book.checkoutCounter+"\n");
+            traverseAndPrintToOutputFile(book.rightBook,writer);
         }
     }
 }
@@ -106,7 +115,7 @@ public class Main {
         inOutCheckCounter();
         library.traverseBook(library.rootBook);
         //for printing to output file outputPS4.txt
-//        printToOutputFile(samples); // should be corrected by mishra for the new tree system
+        printToOutputFile(library.rootBook); // should be corrected by mishra for the new tree system
     }
 
     public static void readFromFile() {
@@ -125,29 +134,18 @@ public class Main {
         }
     }
 
-    // print ot output to be resolved by shubham mishra as per the new tree
-//    public void printToOutputFile(List<Sample> samples){ // to be resolved by swaraj
-//
-//        BufferedWriter writer;
-//        try {
-//            writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
-//            int i=1;
-//            for(Sample sample:samples) {
-//                writer.write("Top Books " + i++ + ": " + sample.getObj1() + ", " + sample.getObj2()+"\n");
-//            }
-//            writer.write("\nList of books not issued:\n");
-//            for(Sample sample:samples){
-//                writer.write("" + sample.getObj1()+"\n");
-//            }
-//            writer.write("\nBook id "+samples.get(0).getObj1()+" is available for checkout.\n");
-//            writer.write("\nAll available copies of the below books have been checked out:\n");
-//            writer.write(""+samples.get(1).getObj1());
-//            writer.flush();
-//            writer.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    // print ot output to outputPS4.txt
+    public static void printToOutputFile(BookNode book){ // to be resolved by mishra
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
+            library.traverseAndPrintToOutputFile(book,writer);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * In this method, we are trying to read input from the PromptsPS4.txt

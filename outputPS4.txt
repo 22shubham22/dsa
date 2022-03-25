@@ -1,15 +1,5 @@
-Top Books 1: 1000002, 56
-Top Books 2: 1000003, 34
-Top Books 3: 1000004, 39
-Top Books 4: 1000005, 12
-
-List of books not issued:
-1000002
-1000003
-1000004
-1000005
-
-Book id 1000002 is available for checkout.
-
-All available copies of the below books have been checked out:
-1000003
+Book Id: 100001, AvailableCounter: 0, CheckOutCounter: 6
+Book Id: 100002, AvailableCounter: 5, CheckOutCounter: 0
+Book Id: 100003, AvailableCounter: 5, CheckOutCounter: 0
+Book Id: 100004, AvailableCounter: 5, CheckOutCounter: 0
+Book Id: 100005, AvailableCounter: 5, CheckOutCounter: 0
