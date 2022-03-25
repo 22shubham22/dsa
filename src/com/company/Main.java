@@ -1,5 +1,6 @@
 package com.company;
 
+import java.awt.print.Book;
 import java.io.IOException;
 import java.io.*;
 import java.util.ArrayList;
@@ -79,89 +80,67 @@ class LibraryManagement {
         }
         return currentBook; // return the book that we found while traversal
     }
-}
 
-class Sample {
-    int obj1;
-    int obj2;
-
-    Sample(int obj1,int obj2) {
-        this.obj1=obj1;
-        this.obj2=obj2;
+    public void traverseBook(BookNode book) { // inorder traversal coz as per assignment while traversing to print inventory BookId should be ascending order.
+        if (book != null) {
+            traverseBook(book.leftBook);
+            //output to file between recursions so that traversal is inorder
+            traverseBook(book.rightBook);
+        }
     }
-
-    public int getObj1() {
-        return obj1;
-    }
-
-    public void setObj1(int obj1) {
-        this.obj1 = obj1;
-    }
-
-    public int getObj2() {
-        return obj2;
-    }
-
-    public void setObj2(int obj2) {
-        this.obj2 = obj2;
-    }
-
 }
 
 public class Main extends LibraryManagement {
 
-    static List<Sample> samples = new ArrayList<Sample>();
-    public static void main(String[] args) {
+//    List<Sample> samples = new ArrayList<Sample>();
+    LibraryManagement library = new LibraryManagement();
+
+    public void main(String[] args) {
         //for reading from input1.txt
         readFromFile();
         //for printing to output file outputPS4.txt
-        printToOutputFile(samples);
+//        printToOutputFile(samples); // should be corrected by mishra for the new tree system
     }
 
-    public static void readFromFile() {
-
+    public void readFromFile() {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("lines.txt"));
             String line = reader.readLine();
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*"));
-                samples.add(new Sample(Integer.parseInt(items.get(0)),Integer.parseInt(items.get(1))));
-                // read next line
-                line = reader.readLine();
+                this.library.insertBook(new BookNode(Integer.parseInt(items.get(0)),Integer.parseInt(items.get(1)),0)); // insert the line (new book) to the library (tree)
+                line = reader.readLine(); // read next line
             }
-            for (int i=0 ; i<samples.size() ; i++) {
-                System.out.print(samples.get(i).getObj1()+" "+samples.get(i).getObj2());
-                System.out.println();
-            }
-            reader.close();
+            reader.close(); // close the reader
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void printToOutputFile(List<Sample> samples){
-
-        BufferedWriter writer;
-        try {
-            writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
-            int i=1;
-            for(Sample sample:samples) {
-                writer.write("Top Books " + i++ + ": " + sample.getObj1() + ", " + sample.getObj2()+"\n");
-            }
-            writer.write("\nList of books not issued:\n");
-            for(Sample sample:samples){
-                writer.write("" + sample.getObj1()+"\n");
-            }
-            writer.write("\nBook id "+samples.get(0).getObj1()+" is available for checkout.\n");
-            writer.write("\nAll available copies of the below books have been checked out:\n");
-            writer.write(""+samples.get(1).getObj1());
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    // print ot output to be resolved by shubham mishra as per the new tree
+//    public void printToOutputFile(List<Sample> samples){
+//
+//        BufferedWriter writer;
+//        try {
+//            writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
+//            int i=1;
+//            for(Sample sample:samples) {
+//                writer.write("Top Books " + i++ + ": " + sample.getObj1() + ", " + sample.getObj2()+"\n");
+//            }
+//            writer.write("\nList of books not issued:\n");
+//            for(Sample sample:samples){
+//                writer.write("" + sample.getObj1()+"\n");
+//            }
+//            writer.write("\nBook id "+samples.get(0).getObj1()+" is available for checkout.\n");
+//            writer.write("\nAll available copies of the below books have been checked out:\n");
+//            writer.write(""+samples.get(1).getObj1());
+//            writer.flush();
+//            writer.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     /*
