@@ -101,6 +101,10 @@ public class Main {
     public static void main(String[] args) {
         //for reading from input1.txt
         readFromFile();
+        library.traverseBook(library.rootBook);
+        //for reading from prompt.txt
+        inOutCheckCounter();
+        library.traverseBook(library.rootBook);
         //for printing to output file outputPS4.txt
 //        printToOutputFile(samples); // should be corrected by mishra for the new tree system
     }
@@ -112,11 +116,10 @@ public class Main {
             String line = reader.readLine();
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*"));
-                library.insertBook(new BookNode(Integer.parseInt(items.get(0)),Integer.parseInt(items.get(1)),0)); // insert the line (new book) to the library (tree)
+                library.insertBook(new BookNode(Integer.parseInt(items.get(0).trim()),Integer.parseInt(items.get(1).trim()),0)); // insert the line (new book) to the library (tree)
                 line = reader.readLine(); // read next line
             }
             reader.close(); // close the reader
-            library.traverseBook(library.rootBook);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -154,13 +157,13 @@ public class Main {
      **/
     public static void inOutCheckCounter() {
         String line;
-        BookNode book = null;
+        BookNode book;
         try {
             FileReader file = new FileReader("promptsPS4.txt");
             BufferedReader br = new BufferedReader(file);
 
             //here we read line by line from the input file which is promptsPS4.txt
-            while( (line = br.readLine())  !=  null){
+            while( (line = br.readLine())  !=  null) {
                 String[] record = line.split(":");
 
                 //here we simply fetch the first string which is the status of book
@@ -171,14 +174,14 @@ public class Main {
                     /*if book status is checkout then we reduce the available count by 1 and increase the
                      checkout counter by 1 */
 
-                    book = library.findBook(Integer.parseInt(record[1]));
-                        if (book != null) {
+                    book = library.findBook(Integer.parseInt(record[1].trim()));
+                        if (book != null && book.availableCount > 0) {
                             book.availableCount--;
                             book.checkoutCounter++;
                         }
                         else
                         {
-                            System.out.println("Invalid Book ID found");
+                            System.out.println("Invalid Book ID found, No such book in Library");
                         }
                 }
                 else if(status.equalsIgnoreCase("checkIn"))
@@ -186,18 +189,18 @@ public class Main {
                     /*here when the book is checked in then we simply increase the available counter by 1
                      but we do not modify the checkout counter here */
 
-                    book = library.findBook(Integer.parseInt((record[1])));
+                    book = library.findBook(Integer.parseInt((record[1].trim())));
                         if (book != null) {
                             book.availableCount++;
                         }
                         else
                         {
-                            System.out.println("Invalid Book ID found");
+                            System.out.println("Invalid Book ID found, No such book in Library");
                         }
                 }
                 else
                 {
-                    System.out.println("Invalid status in the PromptsPS4.txt file: It is neither checkIn or checOut");
+                    System.out.println("Invalid status in the PromptsPS4.txt file: It is neither checkIn or checkOut");
                 }
 
             }

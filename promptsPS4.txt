@@ -1,0 +1,8 @@
+checkOut: 100001
+checkOut: 100001
+checkOut: 100001
+checkOut: 100001
+checkOut: 100001
+checkOut: 100001
+checkIn: 100001
+checkOut: 100001
