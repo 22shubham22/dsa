@@ -172,14 +172,14 @@ public class Main {
                      checkout counter by 1 */
 
                     book = library.findBook(Integer.parseInt(record[1]));
-                    try {
                         if (book != null) {
                             book.availableCount--;
                             book.checkoutCounter++;
                         }
-                    }catch (NullPointerException e){
-                        System.out.println("Null pointer exception caught for variable book");
-                    }
+                        else
+                        {
+                            System.out.println("Invalid Book ID found");
+                        }
                 }
                 else if(status.equalsIgnoreCase("checkIn"))
                 {
@@ -187,13 +187,13 @@ public class Main {
                      but we do not modify the checkout counter here */
 
                     book = library.findBook(Integer.parseInt((record[1])));
-                    try {
                         if (book != null) {
                             book.availableCount++;
                         }
-                    }catch (NullPointerException e){
-                        System.out.println("Null pointer exception caught for variable book");
-                    }
+                        else
+                        {
+                            System.out.println("Invalid Book ID found");
+                        }
                 }
                 else
                 {
