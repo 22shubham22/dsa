@@ -129,7 +129,7 @@ public class Main {
         //for reading from input1.txt
         readFromFile();
         //for printing to output file outputPS4.txt
-//        printToOutputFile(samples);
+//        printToOutputFile(samples); // should be corrected by mishra for the new tree system
     }
 
     public void readFromFile() {
