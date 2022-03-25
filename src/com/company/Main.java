@@ -84,16 +84,18 @@ class LibraryManagement {
         return currentBook; // return the book that we found while traversal
     }
 
-    public void traverseBook(BookNode book) { // inorder traversal coz as per assignment while traversing to print inventory BookId should be ascending order.
+    public void traverseBook(BookNode book,BufferedWriter writer) throws IOException { // inorder traversal coz as per assignment while
+        // traversing
+        // to print inventory BookId should be ascending order.
         if (book != null) {
-            traverseBook(book.leftBook);
+            traverseBook(book.leftBook,writer);
             book.print();
             //output to file between recursions so that traversal is inorder
-            traverseBook(book.rightBook);
+            writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckoutCounter: "+book.checkoutCounter+"\n");
+            traverseBook(book.rightBook,writer);
         }
     }
 }
-
 public class Main {
 
 //    List<Sample> samples = new ArrayList<Sample>();
@@ -103,7 +105,7 @@ public class Main {
         //for reading from input1.txt
         readFromFile();
         //for printing to output file outputPS4.txt
-//        printToOutputFile(samples); // should be corrected by mishra for the new tree system
+        printToOutputFile(library.rootBook); // prints content of nodes of tree in ASC order of Book Id to outputPS4.txt
     }
 
     public static void readFromFile() {
@@ -117,35 +119,24 @@ public class Main {
                 line = reader.readLine(); // read next line
             }
             reader.close(); // close the reader
-            library.traverseBook(library.rootBook);
+      //    library.traverseBook(library.rootBook);  //this output functionality now handled by printToOutputFile()
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // print ot output to be resolved by shubham mishra as per the new tree
-//    public void printToOutputFile(List<Sample> samples){ // to be resolved by swaraj
-//
-//        BufferedWriter writer;
-//        try {
-//            writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
-//            int i=1;
-//            for(Sample sample:samples) {
-//                writer.write("Top Books " + i++ + ": " + sample.getObj1() + ", " + sample.getObj2()+"\n");
-//            }
-//            writer.write("\nList of books not issued:\n");
-//            for(Sample sample:samples){
-//                writer.write("" + sample.getObj1()+"\n");
-//            }
-//            writer.write("\nBook id "+samples.get(0).getObj1()+" is available for checkout.\n");
-//            writer.write("\nAll available copies of the below books have been checked out:\n");
-//            writer.write(""+samples.get(1).getObj1());
-//            writer.flush();
-//            writer.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    // printing content of nodes of the new tree in ASC order of Book Id
+    public static void printToOutputFile(BookNode book){ // to be resolved by swaraj
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
+            library.traverseBook(book,writer);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 //    public void inOutCheckCounter() {
 //        ArrayList<attributeDetails> inOutDetails = new ArrayList<>();
