@@ -3,7 +3,6 @@ package com.company; // to be commented when given to ma'am
 
 import java.io.IOException;
 import java.io.*;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -147,35 +146,47 @@ public class Main {
 //        }
 //    }
 
-//    public void inOutCheckCounter() {
-//        ArrayList<attributeDetails> inOutDetails = new ArrayList<>();
-//        String line;
-//        try {
-//            FileReader file = new FileReader("promptsPS4.txt");
-//            BufferedReader br = new BufferedReader(file);
-//            while((line = br.readLine())!=null){
-//                String[] record = line.split(":");
-//
-//                String status = record[0];
-//                int bkId = Integer.parseInt(record[1]);
-//
-//                inOutDetails.add(new attributeDetails(status,bkId));
-//            }
-//            for(int i=0; i<=inOutDetails.size(); i++)
-//            {
-//                if(inOutDetails.get(i).getStatus().equals("checkOut"))
-//                {
-//                    /*int i = Search(obj1);
-//                    obj2-- for corresponding obj1;*/
-//                }
-//                else if(inOutDetails.get(i).getStatus().equals("checkin"))
-//                {
-//                    /*int i = Search(obj1);
-//                    obj2++ for corresponding obj1;*/
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    /**
+     * In this method, we are trying to read input from the PromptsPS4.txt
+     * and we are checking the status whether it is checkIn or checkOut
+     * Based on that, we update the available counter and the checkout counter
+     *
+     **/
+    public static void inOutCheckCounter() {
+        String line;
+        BookNode book = null;
+        try {
+            FileReader file = new FileReader("promptsPS4.txt");
+            BufferedReader br = new BufferedReader(file);
+
+            //here we read line by line from the input file which is promptsPS4.txt
+            while( (line = br.readLine())  !=  null){
+                String[] record = line.split(":");
+
+                //here we simply fetch the first string which is the status of book
+                String status = record[0];
+
+                if(status.equals("checkOut"))
+                {
+                    /*if book status is checkout then we reduce the available count by 1 and increase the
+                     checkout counter by 1 */
+
+                    book = library.findBook(Integer.parseInt(record[1]));
+                    book.availableCount--;
+                    book.checkoutCounter++;
+                }
+                else if(status.equals("checkIn"))
+                {
+                    /*here when the book is checked in then we simply increase the available counter by 1
+                     but we do not modify the checkout counter here */
+
+                    book = library.findBook(Integer.parseInt((record[1])));
+                    book.availableCount++;
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
