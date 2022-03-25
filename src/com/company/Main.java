@@ -166,22 +166,38 @@ public class Main {
                 //here we simply fetch the first string which is the status of book
                 String status = record[0];
 
-                if(status.equals("checkOut"))
+                if(status.equalsIgnoreCase("checkOut"))
                 {
                     /*if book status is checkout then we reduce the available count by 1 and increase the
                      checkout counter by 1 */
 
                     book = library.findBook(Integer.parseInt(record[1]));
-                    book.availableCount--;
-                    book.checkoutCounter++;
+                    try {
+                        if (book != null) {
+                            book.availableCount--;
+                            book.checkoutCounter++;
+                        }
+                    }catch (NullPointerException e){
+                        System.out.println("Null pointer exception caught for variable book");
+                    }
                 }
-                else if(status.equals("checkIn"))
+                else if(status.equalsIgnoreCase("checkIn"))
                 {
                     /*here when the book is checked in then we simply increase the available counter by 1
                      but we do not modify the checkout counter here */
 
                     book = library.findBook(Integer.parseInt((record[1])));
-                    book.availableCount++;
+                    try {
+                        if (book != null) {
+                            book.availableCount++;
+                        }
+                    }catch (NullPointerException e){
+                        System.out.println("Null pointer exception caught for variable book");
+                    }
+                }
+                else
+                {
+                    System.out.println("Invalid status in the PromptsPS4.txt file: It is neither checkIn or checOut");
                 }
 
             }
