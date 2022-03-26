@@ -107,7 +107,7 @@ public class Main {
 
         _readBookList();  //for reading from input1.txt
         _chkInChkOut();  //for reading from prompt.txt
-        List<BookNode> listOfBooks= new ArrayList<BookNode>();
+        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
         library.traverseBook(library.rootBook, listOfBooks);
         listOfBooks.forEach((book) -> book.print());
         List<BookNode> sortedUsers = listOfBooks.stream().sorted(Comparator.comparing(BookNode::getCheckoutCounter)).collect(Collectors.toList());
@@ -115,13 +115,14 @@ public class Main {
         System.out.println();
         System.out.println();
         sortedUsers.forEach((book) -> book.print());
-        printToOutputFile(sortedUsers); //print tree nodes content sorted in ASC order of Book Id to outputPS4.txt
+        printBooks(sortedUsers); //print tree nodes content sorted in ASC order of Book Id to outputPS4.txt
     }
 
+    //Operation 1
     public static void _readBookList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("inputsPS4.txt")); // providing the name of file from the same directory
+            reader = new BufferedReader(new FileReader("inputPS4.txt")); // providing the name of file from the same directory
             String line = reader.readLine(); // reading one line of file
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*")); // splitting the line based on the expression into a list where list[0] is BookID and list[1] is number of books
@@ -134,27 +135,13 @@ public class Main {
         }
     }
 
-    public static void printToOutputFile(List<BookNode> list){ // printing list content to outputPS4.txt
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
-            for(BookNode book:list) {
-                // printing data of each book
-                writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckoutCounter: "+book.checkoutCounter+"\n");
-            }
-            writer.write("\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
     /**
      * In this method, we are trying to read input from the PromptsPS4.txt
      * and we are checking the status whether it is checkIn or checkOut
      * Based on that, we update the available counter and the checkout counter
      *
      **/
+    //Operation 2
     public static void _chkInChkOut() {
         String line;
         BookNode book;
@@ -191,6 +178,21 @@ public class Main {
             }
         } catch (IOException e) {
             e.printStackTrace(); // error handling from reading from file
+        }
+    }
+
+    //Operation 7
+    public static void printBooks(List<BookNode> list){ // printing list content to outputPS4.txt
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
+            for(BookNode book:list) {  // printing data of each book
+                writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckoutCounter: "+book.checkoutCounter+"\n");
+            }
+            writer.write("\n");
+            writer.flush();
+            writer.close();
+        } catch (IOException e){ // error handling while writing to file
+            e.printStackTrace();
         }
     }
 }
