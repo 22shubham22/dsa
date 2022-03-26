@@ -137,9 +137,9 @@ public class Main {
     public static void printToOutputFile(List<BookNode> list){ // printing list content to outputPS4.txt
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
-            for(BookNode book:list) {
+            for(int i=(list.size()-1);i>=0;i--) {
                 // printing data of each book
-                writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckoutCounter: "+book.checkoutCounter+"\n");
+                writer.write("Book Id: "+list.get(i).bookId+", AvailableCounter: "+list.get(i).availableCount+", CheckoutCounter: "+list.get(i).checkoutCounter+"\n");
             }
             writer.write("\n");
             writer.flush();
