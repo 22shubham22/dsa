@@ -121,7 +121,7 @@ public class Main {
     public static void _readBookList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("inputPS4.txt")); // providing the name of file from the same directory
+            reader = new BufferedReader(new FileReader("inputsPS4.txt")); // providing the name of file from the same directory
             String line = reader.readLine(); // reading one line of file
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*")); // splitting the line based on the expression into a list where list[0] is BookID and list[1] is number of books
@@ -137,9 +137,9 @@ public class Main {
     public static void printToOutputFile(List<BookNode> list){ // printing list content to outputPS4.txt
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
-            for(int i=(list.size()-1);i>=0;i--) {
+            for(BookNode book:list) {
                 // printing data of each book
-                writer.write("Book Id: "+list.get(i).bookId+", AvailableCounter: "+list.get(i).availableCount+", CheckoutCounter: "+list.get(i).checkoutCounter+"\n");
+                writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckoutCounter: "+book.checkoutCounter+"\n");
             }
             writer.write("\n");
             writer.flush();
