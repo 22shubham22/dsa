@@ -15,8 +15,10 @@ checkOut: 100004
 checkOut: 100002
 checkOut: 100003
 checkOut: 100001
+printInventory
 checkOut: 100005
 checkOut: 100001
+ListTopBooks
 checkIn: 100001
 checkOut: 100001
 checkOut: 100004

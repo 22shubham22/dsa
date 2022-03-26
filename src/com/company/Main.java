@@ -102,20 +102,14 @@ class LibraryManagement {
 public class Main {
 
     static LibraryManagement library = new LibraryManagement();
+    static List<String> prompts = new ArrayList<>();
 
     public static void main(String[] args) {
 
         _readBookList();  //for reading from input1.txt
         _chkInChkOut();  //for reading from prompt.txt
-        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
-        library.traverseBook(library.rootBook, listOfBooks);
-        listOfBooks.forEach((book) -> book.print());
-        List<BookNode> sortedUsers = listOfBooks.stream().sorted(Comparator.comparing(BookNode::getCheckoutCounter)).collect(Collectors.toList());
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        sortedUsers.forEach((book) -> book.print());
-        printBooks(sortedUsers); //print tree nodes content sorted in ASC order of Book Id to outputPS4.txt
+        triggerFunctionforPrompts(prompts);
+//        printBooks(sortedUsers); //print tree nodes content sorted in ASC order of Book Id to outputPS4.txt
     }
 
     //Operation 1
@@ -151,9 +145,11 @@ public class Main {
 
             while( (line = br.readLine())  !=  null) { //here we read line by line from the input file which is promptsPS4.txt
                 String[] record = line.split(":"); // split the line from file based on ':'
-                String status = record[0];  //here we simply fetch the first string which is the status of book
-
-                if(status.equalsIgnoreCase("checkOut")) { //if book status is 'checkout' then we reduce the available count by 1 and increase the checkout counter by 1
+                if(record.length == 1) {
+                    prompts.add(record[0].trim());
+                    continue;
+                }
+                if(record[0].equalsIgnoreCase("checkOut")) { //if book status is 'checkout' then we reduce the available count by 1 and increase the checkout counter by 1
                     book = library.findBook(Integer.parseInt(record[1].trim()));
                         if (book != null && book.availableCount > 0) { // checking corner cases such as book is not in library or the book is out of stock
                             book.availableCount--;
@@ -163,7 +159,7 @@ public class Main {
                             System.out.println("Invalid Book ID found, No such book in Library");
                         }
                 }
-                else if(status.equalsIgnoreCase("checkIn")) {  //here when the book is checked in then we simply increase the available counter by 1 , checkout counter remains same
+                else if(record[0].equalsIgnoreCase("checkIn")) {  //here when the book is checked in then we simply increase the available counter by 1 , checkout counter remains same
                     book = library.findBook(Integer.parseInt((record[1].trim()))); // taking care of any strings that might have space in it before parsing to integer
                         if (book != null) { // taking care if the book is not present in library
                             book.availableCount++;
@@ -181,8 +177,40 @@ public class Main {
         }
     }
 
+    //Operation 3
+    public static void _getTopBooks(String prompt) {
+        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
+        library.traverseBook(library.rootBook, listOfBooks);
+        List<BookNode> sortedBooks = listOfBooks.stream().sorted(Comparator.comparing(BookNode::getCheckoutCounter).reversed()).limit(3).collect(Collectors.toList());
+        writeToOutputFile(sortedBooks, prompt);
+    }
+
+    //Operation 4
+    public static void _notIssued(String prompt) {
+        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
+        library.traverseBook(library.rootBook, listOfBooks);
+        List<BookNode> sortedUsers = listOfBooks.stream().filter((book)-> book.checkoutCounter == 0).collect(Collectors.toList());
+        writeToOutputFile(sortedUsers, prompt);
+    }
+
+    //Operation 6
+    public static void _stockOut(String prompt) {
+        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
+        library.traverseBook(library.rootBook, listOfBooks);
+        List<BookNode> sortedUsers = listOfBooks.stream().filter((book)-> book.availableCount == 0).collect(Collectors.toList());
+        writeToOutputFile(sortedUsers, prompt);
+    }
+
     //Operation 7
-    public static void printBooks(List<BookNode> list){ // printing list content to outputPS4.txt
+    public static void _printBooks(String prompt) {
+        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
+        library.traverseBook(library.rootBook, listOfBooks);
+        List<BookNode> sortedUsers = listOfBooks.stream().filter((book)-> book.availableCount == 0).collect(Collectors.toList());
+        writeToOutputFile(sortedUsers,prompt);
+    }
+
+
+    public static void writeToOutputFile(List<BookNode> list, String prompt){ // printing list content to outputPS4.txt
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
             for(BookNode book:list) {  // printing data of each book
@@ -193,6 +221,26 @@ public class Main {
             writer.close();
         } catch (IOException e){ // error handling while writing to file
             e.printStackTrace();
+        }
+    }
+
+    public static void triggerFunctionforPrompts(List<String> prompts) {
+        for(String prompt:prompts) {
+            if (prompt.equalsIgnoreCase("ListTopBooks")) {
+                _getTopBooks(prompt);
+            }
+            else if(prompt.equalsIgnoreCase("BooksNotIssued")) {
+                _notIssued(prompt);
+            }
+            else if(prompt.equalsIgnoreCase("ListStockOut")) {
+                _stockOut(prompt);
+            }
+            else if(prompt.equalsIgnoreCase("printInventory")) {
+                _printBooks(prompt);
+            }
+            else {
+                System.out.println("Invalid Prompt Encountered in promptsPS4.txt");
+            }
         }
     }
 }
