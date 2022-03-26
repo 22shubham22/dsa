@@ -205,8 +205,7 @@ public class Main {
     public static void _printBooks(String prompt) {
         List<BookNode> listOfBooks= new ArrayList<BookNode> ();
         library.traverseBook(library.rootBook, listOfBooks);
-        List<BookNode> sortedUsers = listOfBooks.stream().filter((book)-> book.availableCount == 0).collect(Collectors.toList());
-        writeToOutputFile(sortedUsers,prompt);
+        writeToOutputFile(listOfBooks,prompt);
     }
 
 
