@@ -115,6 +115,7 @@ public class Main {
         System.out.println();
         System.out.println();
         sortedUsers.forEach((book) -> book.print());
+        printToOutputFile(sortedUsers); //print tree nodes content sorted in ASC order of Book Id to outputPS4.txt
     }
 
     public static void _readBookList() {
@@ -130,6 +131,21 @@ public class Main {
             reader.close(); // close the reader
         } catch (IOException e) {
             e.printStackTrace(); // handling exception reading from file
+        }
+    }
+
+    public static void printToOutputFile(List<BookNode> list){ // printing list content to outputPS4.txt
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
+            for(BookNode book:list) {
+                // printing data of each book
+                writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckoutCounter: "+book.checkoutCounter+"\n");
+            }
+            writer.write("\n");
+            writer.flush();
+            writer.close();
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 
