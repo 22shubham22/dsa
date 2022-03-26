@@ -121,7 +121,7 @@ public class Main {
     public static void _readBookList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("inputsPS4.txt")); // providing the name of file from the same directory
+            reader = new BufferedReader(new FileReader("inputPS4.txt")); // providing the name of file from the same directory
             String line = reader.readLine(); // reading one line of file
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*")); // splitting the line based on the expression into a list where list[0] is BookID and list[1] is number of books
