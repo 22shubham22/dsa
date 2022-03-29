@@ -31,6 +31,7 @@ class BookNode {
         this.rightBook=null;
         this.leftBook=null;
     }
+    public int  getBookID() { return this.bookId; }
 
     public int getAvailableCount() { return this.availableCount; }
 
@@ -74,20 +75,21 @@ class LibraryManagement {
         }
     }
 
-    public BookNode findBook(int bookId) {
-        BookNode currentBook= this.rootBook; // assign root node as current node to begin traversal for search
-        while (currentBook.bookId != bookId) { // till we dont find book with given Book ID
-            if (bookId < currentBook.bookId) { // if less the go to left book
-                currentBook=currentBook.leftBook;
-            }
-            else {
-                currentBook=currentBook.rightBook; // if less the go to right book
-            }
-            if(currentBook == null) { // if we reach end but haven't found return null book
-                return null;
-            }
+    public BookNode findBook(BookNode currentBook, int bookId) { // recursive approach coz its given in the function to do it recursively
+        if(currentBook == null){ // if we reach end but haven't found return null book
+            return null;
         }
-        return currentBook; // return the book that we found while traversal
+        if(currentBook.bookId==bookId) {
+            return currentBook; // return the book that we found while traversal
+        }
+        BookNode book;
+        if (bookId < currentBook.bookId) {
+            book=findBook(currentBook.leftBook, bookId);// if less then go to left book
+        }
+        else {
+            book=findBook(currentBook.rightBook, bookId); // if more then go to right book
+        }
+        return book;
     }
 
     public void traverseBook(BookNode book, List<BookNode> listOfBooks) { // inorder traversal coz as per assignment while traversing to print inventory BookId should be ascending order.
@@ -102,14 +104,31 @@ class LibraryManagement {
 public class Main {
 
     static LibraryManagement library = new LibraryManagement();
-    static List<String> prompts = new ArrayList<>();
+    static BufferedWriter writer;
 
     public static void main(String[] args) {
+            _readBookList();  //for reading from inputPS4.txt
+            triggerFunctionforPromptsPS4File(); //for reading from promptsPS4.txt
+            closeWriter(); //for closing the writer
+    }
 
-        _readBookList();  //for reading from input1.txt
-        _chkInChkOut();  //for reading from prompt.txt
-        triggerFunctionforPrompts(prompts);
-//        printBooks(sortedUsers); //print tree nodes content sorted in ASC order of Book Id to outputPS4.txt
+    private static void closeWriter() {
+        try {
+            writer.flush();
+            writer.close(); // close the writer
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void initializeWriter() { // returns the singleton of BufferedWriter
+        if (writer == null) {
+            try {
+                writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //Operation 1
@@ -133,113 +152,188 @@ public class Main {
      * In this method, we are trying to read input from the PromptsPS4.txt
      * and we are checking the status whether it is checkIn or checkOut
      * Based on that, we update the available counter and the checkout counter
-     *
      **/
     //Operation 2
-    public static void _chkInChkOut() {
-        String line;
+    public static void _chkInChkOut(int bkID, String inOut) {
         BookNode book;
-        try {  // to make sure of error handling while reading from file
-            FileReader file = new FileReader("promptsPS4.txt");
-            BufferedReader br = new BufferedReader(file);
-
-            while( (line = br.readLine())  !=  null) { //here we read line by line from the input file which is promptsPS4.txt
-                String[] record = line.split(":"); // split the line from file based on ':'
-                if(record.length == 1) {
-                    prompts.add(record[0].trim());
-                    continue;
-                }
-                if(record[0].equalsIgnoreCase("checkOut")) { //if book status is 'checkout' then we reduce the available count by 1 and increase the checkout counter by 1
-                    book = library.findBook(Integer.parseInt(record[1].trim()));
-                        if (book != null && book.availableCount > 0) { // checking corner cases such as book is not in library or the book is out of stock
-                            book.availableCount--;
-                            book.checkoutCounter++;
-                        }
-                        else { //handling error case when we try to check out a book that is out of stock
-                            System.out.println("Invalid Book ID found, No such book in Library");
-                        }
-                }
-                else if(record[0].equalsIgnoreCase("checkIn")) {  //here when the book is checked in then we simply increase the available counter by 1 , checkout counter remains same
-                    book = library.findBook(Integer.parseInt((record[1].trim()))); // taking care of any strings that might have space in it before parsing to integer
-                        if (book != null) { // taking care if the book is not present in library
-                            book.availableCount++;
-                        }
-                        else { // suitable message to denote that the book we're trying to cehck in was never present in library
-                            System.out.println("Invalid Book ID found, No such book in Library");
-                        }
-                }
-                else {  // finaly taking care of any invalid entried in promptsPS4.txt file
+                if (inOut.equalsIgnoreCase("checkOut")) { //if book status is 'checkout' then we reduce the available
+                    // count by 1 and increase the checkout counter by 1
+                    book = library.findBook(library.rootBook, bkID);
+                    if (book != null && book.availableCount > 0) { // checking corner cases such as book is not in library or the book is out of stock
+                        book.availableCount--;
+                        book.checkoutCounter++;
+                    } else { //handling error case when we try to check out a book that is out of stock
+                        System.out.println("Invalid Book ID found, No such book in Library");
+                    }
+                } else if (inOut.equalsIgnoreCase("checkIn")) {  //here when the book is checked in then we simply
+                    // increase the available counter by 1 , checkout counter remains same
+                    book = library.findBook(library.rootBook, bkID);
+                    if (book != null) { // taking care if the book is not present in library
+                        book.availableCount++;
+                    } else { // suitable message to denote that the book we're trying to cehck in was never present in library
+                        System.out.println("Invalid Book ID found, No such book in Library");
+                    }
+                } else { // i don't think this else is required anymore coz we already checked but still
+                    // finaly taking care of any invalid entried in promptsPS4.txt file
                     System.out.println("Invalid status in the PromptsPS4.txt file: It is neither checkIn or checkOut");
                 }
-            }
-        } catch (IOException e) {
-            e.printStackTrace(); // error handling from reading from file
-        }
     }
 
     //Operation 3
-    public static void _getTopBooks(String prompt) {
-        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
+    public static void _getTopBooks() {
+        List<BookNode> listOfBooks = new ArrayList<BookNode>();
         library.traverseBook(library.rootBook, listOfBooks);
-        List<BookNode> sortedBooks = listOfBooks.stream().sorted(Comparator.comparing(BookNode::getCheckoutCounter).reversed()).limit(3).collect(Collectors.toList());
-        writeToOutputFile(sortedBooks, prompt);
-    }
-
-    //Operation 4
-    public static void _notIssued(String prompt) {
-        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
-        library.traverseBook(library.rootBook, listOfBooks);
-        List<BookNode> sortedUsers = listOfBooks.stream().filter((book)-> book.checkoutCounter == 0).collect(Collectors.toList());
-        writeToOutputFile(sortedUsers, prompt);
-    }
-
-    //Operation 6
-    public static void _stockOut(String prompt) {
-        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
-        library.traverseBook(library.rootBook, listOfBooks);
-        List<BookNode> sortedUsers = listOfBooks.stream().filter((book)-> book.availableCount == 0).collect(Collectors.toList());
-        writeToOutputFile(sortedUsers, prompt);
-    }
-
-    //Operation 7
-    public static void _printBooks(String prompt) {
-        List<BookNode> listOfBooks= new ArrayList<BookNode> ();
-        library.traverseBook(library.rootBook, listOfBooks);
-        writeToOutputFile(listOfBooks,prompt);
-    }
-
-
-    public static void writeToOutputFile(List<BookNode> list, String prompt){ // printing list content to outputPS4.txt
+        List<BookNode> sortedBooks =
+                listOfBooks.stream().sorted(Comparator.comparing(BookNode::getCheckoutCounter).thenComparing(BookNode::getBookID,(s1,s2) -> {
+                    if(s1.compareTo(s2)>0) {
+                        return s1;
+                    }
+                    return s2 ;
+                }).reversed()).limit(3).collect(Collectors.toList());
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("outputPS4.txt"));
-            for(BookNode book:list) {  // printing data of each book
-                writer.write("Book Id: "+book.bookId+", AvailableCounter: "+book.availableCount+", CheckoutCounter: "+book.checkoutCounter+"\n");
+            initializeWriter();
+            int i=1;
+            for(BookNode book : sortedBooks) {  // printing data of top books
+                if (book.checkoutCounter > 0) {
+                    writer.write("Top Books " + (i++) + ": " + book.bookId + ", " + book.checkoutCounter + "\n");
+                }
+            }
+            if(i!=4){
+                System.out.println("Checkout counter of "+(4-i)+ " Top Books was 0 hence not printing them to OutputPS4.txt");
             }
             writer.write("\n");
-            writer.flush();
-            writer.close();
-        } catch (IOException e){ // error handling while writing to file
+        } catch (IOException e) { // error handling while writing to file
             e.printStackTrace();
         }
     }
 
-    public static void triggerFunctionforPrompts(List<String> prompts) {
-        for(String prompt:prompts) {
-            if (prompt.equalsIgnoreCase("ListTopBooks")) {
-                _getTopBooks(prompt);
-            }
-            else if(prompt.equalsIgnoreCase("BooksNotIssued")) {
-                _notIssued(prompt);
-            }
-            else if(prompt.equalsIgnoreCase("ListStockOut")) {
-                _stockOut(prompt);
-            }
-            else if(prompt.equalsIgnoreCase("printInventory")) {
-                _printBooks(prompt);
+    //Operation 4
+    public static void _notIssued() {
+        List<BookNode> listOfBooks = new ArrayList<BookNode>();
+        library.traverseBook(library.rootBook, listOfBooks);
+        List<BookNode> sortedUsers = listOfBooks.stream().filter((book) -> book.checkoutCounter == 0).collect(Collectors.toList());
+        try {
+            initializeWriter();
+            if(sortedUsers.isEmpty()){
+                System.out.println("All books are issued");
             }
             else {
-                System.out.println("Invalid Prompt Encountered in promptsPS4.txt");
+                writer.write("List of books not issued:\n");
+                for (BookNode book : sortedUsers) {
+                    writer.write(""+book.bookId+"\n");
+                }
             }
+            writer.write("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //operation 5
+    public static void _findBook(int bkID) {
+        BookNode book = library.findBook(library.rootBook,bkID);
+        try {
+            initializeWriter();
+            if (book != null) {
+                if (book.availableCount > 0) {   // book is in stock
+                    writer.write("Book id " + bkID + " is available for checkout\n");
+                }
+                else{                           // book is out if stock
+                    writer.write("All copies of book id "+bkID+" have been checked out\n");
+                }
+            }
+            else{                               // book does not exist in the library
+                writer.write("Book id "+bkID+" does not exist\n");
+            }
+            writer.write("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Operation 6
+    public static void _stockOut() {
+        List<BookNode> listOfBooks = new ArrayList<BookNode>();
+        library.traverseBook(library.rootBook, listOfBooks);
+        List<BookNode> sortedUsers = listOfBooks.stream().filter((book) -> book.availableCount == 0).collect(Collectors.toList());
+        try {
+            initializeWriter();
+            if(sortedUsers.isEmpty()){
+                System.out.println("All books are in stock");
+            }
+            else {
+                writer.write("All available copies of the below books have been checked out:\n");
+                for (BookNode book : sortedUsers) {
+                    writer.write(""+book.bookId+"\n");
+                }
+            }
+            writer.write("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Operation 7
+    public static void _printBooks() {
+        List<BookNode> listOfBooks = new ArrayList<BookNode>();
+        library.traverseBook(library.rootBook, listOfBooks);
+        try {
+            initializeWriter();
+            if(listOfBooks.isEmpty()){
+                System.out.println("There are currently no books in the Library");
+            }
+            else {
+                writer.write("There are a total of "+listOfBooks.size()+" book titles in the library.\n");
+                for (BookNode book : listOfBooks) {
+                    writer.write(""+book.bookId+", "+book.availableCount+"\n");
+                }
+            }
+            writer.write("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void triggerFunctionforPromptsPS4File() { //for reading from promptsPS4.txt
+        String line;
+        try {  // to make sure of error handling while reading from file
+            FileReader file = new FileReader("promptsPS4.txt");
+            BufferedReader br = new BufferedReader(file);
+
+            while ((line = br.readLine()) != null) { //here we read line by line from the input file which is promptsPS4.txt
+                if(line.length()==0) { continue; }
+                String[] record = line.split(":"); // split the line from file based on ':'
+                record[0] = record[0].trim(); // .trim() removes any unnecessary leading and trailing spaces
+                if(record[0].equalsIgnoreCase("checkOut") || record[0].equalsIgnoreCase("checkIn")){
+                    if(record.length!=2) {
+                        System.out.println("Invalid "+record[0]+" format: The correct format is "+record[0]+": <BookId>");
+                    }
+                    else {
+                        _chkInChkOut(Integer.parseInt(record[1].trim()), record[0]); // .trim() takes care of any strings that might have space in it before parsing to integer
+                    }
+                }
+                else if(record[0].equalsIgnoreCase("findBook")){
+                    if(record.length!=2) {
+                        System.out.println("Invalid "+record[0]+" format: The correct format is "+record[0]+": <BookId>");
+                    }
+                    else {
+                        _findBook(Integer.parseInt(record[1].trim()));
+                    }
+                }
+                else if (record[0].equalsIgnoreCase("ListTopBooks")) {
+                    _getTopBooks();
+                } else if (record[0].equalsIgnoreCase("BooksNotIssued")) {
+                    _notIssued();
+                } else if (record[0].equalsIgnoreCase("ListStockOut")) {
+                    _stockOut();
+                } else if (record[0].equalsIgnoreCase("printInventory")) {
+                    _printBooks();
+                } else {
+                    System.out.println("Invalid Prompt Encountered in promptsPS4.txt");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
