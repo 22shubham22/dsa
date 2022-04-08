@@ -36,10 +36,6 @@ class BookNode {
     public int getAvailableCount() { return this.availableCount; }
 
     public int getCheckoutCounter() { return this.checkoutCounter; }
-
-    public void print() {
-        System.out.print(this.bookId+","+this.availableCount+","+this.checkoutCounter+"\n");
-    }
 }
 
 class LibraryManagement {
@@ -48,29 +44,26 @@ class LibraryManagement {
         rootBook= null;
     }
 
-    public void insertBook(BookNode book) {
-        if (this.rootBook==null) { // if root node is null, the root node is assigned the book
-             this.rootBook=book;
+    public void insertBook(BookNode currentBook,BookNode bookToInsert)
+    {
+        if (currentBook == null) {  // if root node is null, the root node is assigned the bookToInsert
+            this.rootBook = bookToInsert;
+            return;
         }
-        else {
-            BookNode currentBook=this.rootBook;
-            BookNode previousBook;
-            while (true) { // will be terminated internally
-                previousBook=currentBook; // to keep track of previous book(node) , in case current book(node) is null
-                if(book.bookId < currentBook.bookId ) { // then go left
-                    currentBook=currentBook.leftBook;
-                    if (currentBook == null) { //if left book (node) is null i.e empty
-                        previousBook.leftBook=book; // then assign this place to current book
-                        return;
-                    }
-                }
-                else { // else , go right
-                    currentBook=currentBook.rightBook;
-                    if (currentBook == null) { //if right book (node) is null i.e empty
-                        previousBook.rightBook=book; // then assign this place to current book
-                        return;
-                    }
-                }
+        if (bookToInsert.bookId < currentBook.bookId) { // if the given bookToInsert.bookId is less than the rootBook.bookId, recur for the left subtree
+            if(currentBook.leftBook==null){
+                currentBook.leftBook=bookToInsert;
+            }
+            else {
+                insertBook(currentBook.leftBook, bookToInsert);
+            }
+        }
+        else { // otherwise, recur for the right subtree i.e. when bookToInsert.bookId >= rootBook.bookId
+            if(currentBook.rightBook==null){
+                currentBook.rightBook=bookToInsert;
+            }
+            else {
+                insertBook(currentBook.rightBook, bookToInsert);
             }
         }
     }
@@ -139,7 +132,7 @@ public class Main {
             String line = reader.readLine(); // reading one line of file
             while (line != null) {
                 List<String> items = Arrays.asList(line.split("\\s*,\\s*")); // splitting the line based on the expression into a list where list[0] is BookID and list[1] is number of books
-                library.insertBook(new BookNode(Integer.parseInt(items.get(0).trim()),Integer.parseInt(items.get(1).trim()),0)); // insert the line (new book) to the library (tree)
+                library.insertBook(library.rootBook,new BookNode(Integer.parseInt(items.get(0).trim()), Integer.parseInt(items.get(1).trim()),0)); // insert the line (new book) to the library (tree)
                 line = reader.readLine(); // read next line
             }
             reader.close(); // close the reader
@@ -332,6 +325,7 @@ public class Main {
                     System.out.println("Invalid Prompt Encountered in promptsPS4.txt");
                 }
             }
+            br.close(); // close the reader
         } catch (IOException e) {
             e.printStackTrace();
         }
