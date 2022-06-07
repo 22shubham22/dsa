@@ -1,15 +1,11 @@
-Top Books 1: 1000002, 56
-Top Books 2: 1000003, 34
-Top Books 3: 1000004, 39
-Top Books 4: 1000005, 12
+There are a total of 5 book titles in the library.
+100001, 0
+100002, 0
+100003, 1
+100004, 3
+100005, 4
 
-List of books not issued:
-1000002
-1000003
-1000004
-1000005
+Top Books 1: 100001, 5
+Top Books 2: 100002, 5
+Top Books 3: 100003, 4
 
-Book id 1000002 is available for checkout.
-
-All available copies of the below books have been checked out:
-1000003
