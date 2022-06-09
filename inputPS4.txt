@@ -6,7 +6,7 @@ A3 / 18 / 38
 A4 / 80 / 60
 A5 / 10 / 15
 A6 / 20 / 22
-Weapons : 2
+Weapons : 0
 Max Weight : 118
 A1 / -10 / 20
 A2 / 30 / 0
