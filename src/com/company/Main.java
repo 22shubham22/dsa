@@ -3,6 +3,7 @@ package com.company; // to be commented when given to ma'am
 
 import java.io.IOException;
 import java.io.*;
+import java.sql.Array;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -68,12 +69,30 @@ class TestCase {
         return temp;
     }
 }
+class Output {
+    double damage;
+    double[] ratio;
+    Output(double damage,double[] ratio) {
+        this.damage = damage;
+        this.ratio = ratio;
+    }
+    public void display() {
+        System.out.println();
+        System.out.println("<----------------------------------------------------------->");
+        System.out.println(damage);
+        for(int i=0; i<ratio.length;i++){
+            System.out.print(ratio[i]+" ");
+        }
+
+    }
+}
 public class Main {
     static BufferedWriter writer;
 
     public static void main(String[] args) {
         Map<Integer,String> invalidTestcase;
         List<TestCase> testCases = new ArrayList<>();
+        List<Output> outputs = new ArrayList<>();
 
         readBookList(testCases);  //for reading from inputPS4.txt
 
@@ -82,25 +101,20 @@ public class Main {
         invalidTestcase = fetchInvalidTestCase(testCases);
         System.out.println(invalidTestcase);
 
-        for(int i=0;i<testCases.size();i++) {
-            if(!invalidTestcase.containsKey(i)) {
-                testCases.get(i).display();
-            }
-        }
-        List<Double> maxSize = new ArrayList<>();
-        testCases.forEach(testCase -> {
-            //for each iter, we obtain total value from the knapsack function and keep adding it to the size list
-            double size = getMaxValue(testCase);
-            maxSize.add(size);
-        });
+//        for(int i=0;i<testCases.size();i++) {
+//            if(!invalidTestcase.containsKey(i)) {
+//                testCases.get(i).display();
+//            }
+//        }
         for(int i=0;i<testCases.size();i++) {
             if(invalidTestcase.containsKey(i)) {
-                maxSize.add(-1.0);
+                outputs.add(new Output(-1.0,new double[0]));
             }
             else {
-                maxSize.add(getMaxValue(testCases.get(i)));
+                getMaxValue(testCases.get(i),outputs);
             }
         }
+        outputs.forEach(Output::display);
             
     }
 
@@ -196,30 +210,32 @@ public class Main {
     }
 
     // Fractional Knapsack Logic
-    private static double getMaxValue(TestCase testcase)
+    private static void getMaxValue(TestCase testcase, List<Output> outputs)
     {
+        double[] ratio = new double[testcase.weightValues.size()];
+        Arrays.fill(ratio,0.0);
         int capacity = testcase.maxWeight;
- 
         double totalValue = 0d;
- 
-        for (int i=0; i<testcase.weightValues.size();i++) {
- 
-            int curWt = testcase.weightValues.get(i);
-            int curVal = testcase.damagevalues.get(i);
- 
-            if (capacity - curWt >= 0) {
-                // this weight can be picked while
-                capacity = capacity - curWt;
-                totalValue += curVal;
-            }
-            else {
-                // item cant be picked whole
-                double fraction = ((double)capacity / (double)curWt);totalValue += (curVal * fraction);
-                capacity = (int)(capacity - (curWt * fraction));
-                break;
+        while (capacity > 0) {
+            for (int i: testcase.ratio.keySet()) {
+                int curWt = testcase.weightValues.get(i);
+                int curVal = testcase.damagevalues.get(i);
+                if (capacity - curWt >= 0) {
+                    // this weight can be picked while
+                    capacity = capacity - curWt;
+                    totalValue += curVal;
+                    ratio[i] = ratio[i] + 1.0;
+                }
+                else {
+                    // item can't be picked whole
+                    double fraction = ((int)((double)capacity/curWt * 100))/100.0;
+                    totalValue += (curVal * fraction);
+                    capacity = (int)(capacity - (curWt * fraction));
+                    ratio[i] = ratio[i] + fraction;
+                    break;
+                }
             }
         }
- 
-        return totalValue;
+        outputs.add(new Output(totalValue,ratio));
     }
 }

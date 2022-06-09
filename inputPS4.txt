@@ -8,8 +8,8 @@ A5 / 10 / 15
 A6 / 20 / 22
 Weapons : 2
 Max Weight : 118
-A1 / 10 / 20
-A2 / 30 / 40
+A1 / -10 / 20
+A2 / 30 / 0
 Weapons : 1
 Max Weight : 118
 A1 / 10 / 20
