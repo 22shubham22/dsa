@@ -3,17 +3,14 @@ package com.company; // to be commented when given to ma'am
 
 import java.io.IOException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 class TestCase {
     int weapons;
     int maxWeight;
     List<Integer> weightValues;
     List<Integer> damagevalues;
+    List<Double> ratio;
 
     TestCase(int weapons,int maxWeight,List<Integer> weightValues,List<Integer> damagevalues) {
         this.weapons = weapons;
@@ -21,6 +18,18 @@ class TestCase {
         this.weightValues = weightValues;
         this.damagevalues = damagevalues;
     }
+
+    public void calculateRatio()
+    {
+        //iterate weightvalues and damagevalues and add to ratio
+        
+        for(int i=0; i<weightValues.size(); i++)
+        {
+            double currRatio = (damagevalues.get(i))/(weightValues.get(i));
+            ratio.add(currRatio);
+        }
+    }
+
     public void display() {
         System.out.println();
         System.out.println("<----------------------------------------------------------->");
@@ -37,14 +46,15 @@ public class Main {
     public static void main(String[] args) {
         List<TestCase> testCases = new ArrayList<>();
         _readBookList(testCases);  //for reading from inputPS4.txt
+
+        testCases.forEach(testcase ->{
+            testcase.calculateRatio();
+        });
+
         List<Double> maxSize = new ArrayList<>();
         testCases.forEach(testCase -> {
-            int[] wt = testCase.weightValues.stream().mapToInt(Integer::intValue).toArray();
-            int[] val = testCase.damagevalues.stream().mapToInt(Integer::intValue).toArray();
-            int maxwt = testCase.maxWeight;
-
             //for each iter, we obtain total value from the knapsack function and keep adding it to the size list
-            double size = getMaxValue(wt, val, maxwt);
+            double size = getMaxValue(testCase);
             maxSize.add(size);
         });
             
@@ -122,29 +132,18 @@ public class Main {
     }
 
     // Fractional Knapsack Logic
-    private static double getMaxValue(int[] wt, int[] val, int capacity)
+    private static double getMaxValue(TestCase testcase)
     {
-        ItemValue[] iVal = new ItemValue[wt.length];
- 
-        for (int i = 0; i < wt.length; i++) {
-            iVal[i] = new ItemValue(wt[i], val[i], i);
-        }
- 
+        int capacity = testcase.maxWeight;
         // sorting items by value;
-        Arrays.sort(iVal, new Comparator<ItemValue>() {
-            @Override
-            public int compare(ItemValue o1, ItemValue o2)
-            {
-                return o2.cost.compareTo(o1.cost);
-            }
-        });
+        Collections.sort(testcase.ratio, Collections.reverseOrder());
  
         double totalValue = 0d;
  
-        for (ItemValue i : iVal) {
+        for (Integer i : testcase.weightValues) {
  
-            int curWt = (int)i.wt;
-            int curVal = (int)i.val;
+            int curWt = (int)testcase.weightValues.get(i);
+            int curVal = (int)testcase.damagevalues.get(i);
  
             if (capacity - curWt >= 0) {
                 // this weight can be picked while
@@ -163,20 +162,5 @@ public class Main {
         }
  
         return totalValue;
-    }
- 
-    // item value class
-    static class ItemValue {
-        Double cost;
-        double wt, val, ind;
- 
-        // item value function
-        public ItemValue(int wt, int val, int ind)
-        {
-            this.wt = wt;
-            this.val = val;
-            this.ind = ind;
-            cost = new Double((double)val / (double)wt);
-        }
     }
 }
