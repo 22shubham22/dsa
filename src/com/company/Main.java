@@ -1,4 +1,4 @@
-package com.company; // to be commented when given to ma'am
+//package com.company; // to be commented when given to ma'am
 
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ class TestCase {
     int maxWeight;
     List<Integer> weightValues;
     List<Integer> damagevalues;
-    List<Double> ratio;
+    HashMap<Integer, Double> ratio;
 
     TestCase(int weapons,int maxWeight,List<Integer> weightValues,List<Integer> damagevalues) {
         this.weapons = weapons;
@@ -22,12 +22,13 @@ class TestCase {
     public void calculateRatio()
     {
         //iterate weightvalues and damagevalues and add to ratio
-        
+        HashMap<Integer, Double> localRatio = new HashMap<Integer, Double>();
         for(int i=0; i<weightValues.size(); i++)
         {
-            double currRatio = (damagevalues.get(i))/(weightValues.get(i));
-            ratio.add(currRatio);
+            double currRatio = ((double)damagevalues.get(i))/(weightValues.get(i));
+            localRatio.put(i, currRatio);
         }
+        ratio = sortByValue(localRatio);
     }
 
     public void display() {
@@ -37,7 +38,30 @@ class TestCase {
         System.out.println(maxWeight);
         System.out.println(weightValues);
         System.out.println(damagevalues);
+        //System.out.println(ratio);
+    }
+    
 
+    public HashMap<Integer, Double> sortByValue(HashMap<Integer, Double> hm)
+    {
+        // Create a list from elements of HashMap
+        List<Map.Entry<Integer, Double> > list
+            = new LinkedList<Map.Entry<Integer, Double> >(
+                hm.entrySet());
+ 
+        // Sort the list using lambda expression
+        Collections.sort(
+            list,
+            (i1,
+             i2) -> i1.getValue().compareTo(i2.getValue()));
+ 
+        // put data from sorted list to hashmap
+        HashMap<Integer, Double> temp
+            = new LinkedHashMap<Integer, Double>();
+        for (Map.Entry<Integer, Double> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
     }
 }
 public class Main {
@@ -50,6 +74,11 @@ public class Main {
         testCases.forEach(testcase ->{
             testcase.calculateRatio();
         });
+
+        testCases.forEach(testcase ->{
+            testcase.display();
+        });
+
 
         List<Double> maxSize = new ArrayList<>();
         testCases.forEach(testCase -> {
@@ -135,8 +164,6 @@ public class Main {
     private static double getMaxValue(TestCase testcase)
     {
         int capacity = testcase.maxWeight;
-        // sorting items by value;
-        Collections.sort(testcase.ratio, Collections.reverseOrder());
  
         double totalValue = 0d;
  
