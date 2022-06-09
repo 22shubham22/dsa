@@ -89,7 +89,7 @@ public class Main {
                 String[] item1 = line.split(":"); 
                 line = reader.readLine(); 
                 String[] item2 = line.split(":"); 
-                
+                line = reader.readLine(); 
                 
                 String[] item;
                 List<Integer> weightValues = new ArrayList<>();
