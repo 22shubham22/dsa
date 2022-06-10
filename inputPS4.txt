@@ -10,20 +10,30 @@ Weapons : 0
 Max Weight : 118
 A1 / -10 / 20
 A2 / 30 / 0
-Weapons : 1
-Max Weight : 118
-A1 / 10 / 20
-Weapons : 3
-Max Weight : 118
-A1 / 10 / 20
-A2 / 30 / 40
-A3 / 18 / 38
 Weapons : 7
-Max Weight : 118
-A1 / 10 / 20
-A2 / 30 / 40
-A3 / 18 / 38
-A4 / 80 / 60
-A5 / 10 / 15
-A6 / 20 / 22
-A7 / 10 / 69
+Max Weight : 150
+A1 / 20 / 10
+A2 / 25 / 50
+A3 / 32 / 48
+A4 / 30 / 50
+A5 / 20 / 38
+A6 / 16 / 20
+A7 / 31 / 32
+Weapons : 3
+Max Weight : 100
+A1 / 10 / 25
+A2 / 25 / 45
+A3 / 25 / 50
+Weapons : 5
+Max Weight : 157
+A1 / 25 / 10
+A2 / 25 / 30
+A3 / 25 / 38
+A4 / 40 / 50
+A5 / 20 / 38
+Weapons : 4
+Max Weight : 115
+A1 / 25 / 20
+A2 / 15 / 30
+A3 / 25 / 28
+A4 / 50 / 50

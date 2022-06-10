@@ -101,11 +101,6 @@ public class Main {
         invalidTestcase = fetchInvalidTestCase(testCases);
         System.out.println(invalidTestcase);
 
-//        for(int i=0;i<testCases.size();i++) {
-//            if(!invalidTestcase.containsKey(i)) {
-//                testCases.get(i).display();
-//            }
-//        }
         for(int i=0;i<testCases.size();i++) {
             if(invalidTestcase.containsKey(i)) {
                 outputs.add(new Output(-1.0,new double[0]));
@@ -114,7 +109,17 @@ public class Main {
                 getMaxValue(testCases.get(i),outputs);
             }
         }
-        outputs.forEach(Output::display);
+//        outputs.forEach(Output::display);
+        for(int i=0;i<outputs.size();i++) {
+            if(invalidTestcase.containsKey(i)) {
+                System.out.println();
+                System.out.println("<----------------------------------------------------------->");
+                System.out.println(invalidTestcase.get(i));
+            }
+            else {
+                outputs.get(i).display();
+            }
+        }
             
     }
 
