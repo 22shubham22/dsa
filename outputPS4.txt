@@ -1,11 +1,35 @@
-There are a total of 5 book titles in the library.
-100001, 0
-100002, 0
-100003, 1
-100004, 3
-100005, 4
-
-Top Books 1: 100001, 5
-Top Books 2: 100002, 5
-Top Books 3: 100003, 4
-
+Total Damage: 157.2
+Ammunition Packs Selection Ratio:
+A0 > 1
+A1 > 1
+A2 > 1
+A3 > 0.37
+A4 > 1
+A5 > 1
+Total Damage: 233.84
+Ammunition Packs Selection Ratio:
+A0 > 0
+A1 > 1
+A2 > 1
+A3 > 1
+A4 > 1
+A5 > 1
+A6 > 0.87
+Total Damage: 204.0
+Ammunition Packs Selection Ratio:
+A0 > 2
+A1 > 1.2
+A2 > 2
+Total Damage: 207.04
+Ammunition Packs Selection Ratio:
+A0 > 1
+A1 > 1
+A2 > 1.08
+A3 > 1
+A4 > 2
+Total Damage: 128.0
+Ammunition Packs Selection Ratio:
+A0 > 1
+A1 > 1
+A2 > 1
+A3 > 1

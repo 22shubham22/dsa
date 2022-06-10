@@ -3,11 +3,10 @@ package com.company; // to be commented when given to ma'am
 
 import java.io.IOException;
 import java.io.*;
-import java.sql.Array;
 import java.util.*;
 import java.util.Map.Entry;
 
-class TestCase {
+class TestCase { // Model of one particular test case from inputps4.txt
     int weapons;
     int maxWeight;
     List<Integer> weightValues;
@@ -69,7 +68,7 @@ class TestCase {
         return temp;
     }
 }
-class Output {
+class Output { // Model of one particular output for corresponding testcase
     double damage;
     double[] ratio;
     Output(double damage,double[] ratio) {
@@ -89,37 +88,40 @@ class Output {
 public class Main {
     static BufferedWriter writer;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Map<Integer,String> invalidTestcase;
         List<TestCase> testCases = new ArrayList<>();
         List<Output> outputs = new ArrayList<>();
 
-        readBookList(testCases);  //for reading from inputPS4.txt
+        readInputFile(testCases);  //for reading from inputPS4.txt
 
-        testCases.forEach(TestCase::calculateRatio);
+        testCases.forEach(TestCase::calculateRatio); // calculation of ratio of damage:weight and sort in reverse order
 
-        invalidTestcase = fetchInvalidTestCase(testCases);
+        invalidTestcase = fetchInvalidTestCase(testCases); // look for invalid test case with Negative/Zero values
         System.out.println(invalidTestcase);
 
-        for(int i=0;i<testCases.size();i++) {
+        for(int i=0;i<testCases.size();i++) { // call greedy algo only for valid test cases
             if(invalidTestcase.containsKey(i)) {
-                outputs.add(new Output(-1.0,new double[0]));
+                outputs.add(new Output(-1.0,new double[0])); // invalid
             }
             else {
-                getMaxValue(testCases.get(i),outputs);
+                getMaxValue(testCases.get(i),outputs); // valid
             }
         }
-//        outputs.forEach(Output::display);
-        for(int i=0;i<outputs.size();i++) {
+
+        initializeWriter();
+        for(int i=0;i<outputs.size();i++) { // display outputs
             if(invalidTestcase.containsKey(i)) {
                 System.out.println();
                 System.out.println("<----------------------------------------------------------->");
-                System.out.println(invalidTestcase.get(i));
+                System.out.println(invalidTestcase.get(i)); // appropriate message for invalid testcase
             }
             else {
-                outputs.get(i).display();
+                outputs.get(i).display();// valid outputs
+                writeToFile(outputs.get(i));
             }
         }
+        closeWriter();
             
     }
 
@@ -143,7 +145,7 @@ public class Main {
     }
 
     //Operation 1
-    public static void readBookList(List<TestCase> testCases) {
+    public static void readInputFile(List<TestCase> testCases) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("inputPS4.txt")); 
@@ -191,29 +193,6 @@ public class Main {
         return m;
     }
 
-    public static void triggerFunctionforPromptsPS4File() { 
-        String line;
-        try { 
-            FileReader file = new FileReader("promptsPS4.txt");
-            BufferedReader br = new BufferedReader(file);
-
-            while ((line = br.readLine()) != null) { 
-                if(line.length()==0) { continue; } 
-                String[] record = line.split(":"); 
-                record[0] = record[0].trim(); 
-                if(record[0].equalsIgnoreCase("checkOut") || record[0].equalsIgnoreCase("checkIn")){
-
-                }
-                else if(record[0].equalsIgnoreCase("findBook")){
-
-                }
-            }
-            br.close(); 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     // Fractional Knapsack Logic
     private static void getMaxValue(TestCase testcase, List<Output> outputs)
     {
@@ -242,5 +221,23 @@ public class Main {
             }
         }
         outputs.add(new Output(totalValue,ratio));
+    }
+
+    public static void writeToFile(Output op) throws IOException {
+        writer.write("Total Damage: ");
+        writer.write(String.valueOf(op.damage));
+        writer.newLine();
+        writer.write("Ammunition Packs Selection Ratio:");
+        writer.newLine();
+        for(int i=0;i<op.ratio.length;i++) {
+            writer.write("A");
+            writer.write(String.valueOf(i));
+            writer.write(" > ");
+            if(op.ratio[i] > (int)op.ratio[i])
+                writer.write(String.valueOf(op.ratio[i]));
+            else
+                writer.write(String.valueOf((int)op.ratio[i]));
+            writer.newLine();
+        }
     }
 }
