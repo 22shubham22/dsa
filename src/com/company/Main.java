@@ -231,7 +231,7 @@ public class Main {
         writer.newLine();
         for(int i=0;i<op.ratio.length;i++) {
             writer.write("A");
-            writer.write(String.valueOf(i));
+            writer.write(String.valueOf(i+1));
             writer.write(" > ");
             if(op.ratio[i] > (int)op.ratio[i])
                 writer.write(String.valueOf(op.ratio[i]));
